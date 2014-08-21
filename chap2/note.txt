@@ -103,3 +103,4 @@ enum open_modes {input, output, append};
 // Definition of Sales_itemclass and related functions goes here
 #endif
 
+   
