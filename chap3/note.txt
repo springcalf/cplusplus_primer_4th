@@ -83,9 +83,75 @@ vector<int>::size_type // ok
 vector::size_type // error
 下标操作不添加元素
 
-C++ 程序员习惯于优先选用 != 而不是 < 来编写循环判断条件.调用 size 成员函数而不保存它返回的值，在这个例子中同样不是必需的，但这反映了一种良好的编程习惯。在 C++ 中，有些数据结构（如vector）可以动态增长
-
+	C++ 程序员习惯于优先选用 != 而不是 < 来编写循环判断条件.调用 size 成员函数而不保存它返回的值，在这个例子中同样不是必需的，但这反映了一种良好的编程习惯。在 C++ 中，有些数据结构（如vector）可以动态增长
 必须是已存在的元素才能用下标操作符进行索引。通过下标操作进行赋值时，不会添加任何元素。
 
 
-
+	迭代器是一种检查容器内元素并遍历元素的数据类型。
+	vector<int>::iterator iter;
+	每种容器都定义了一对命名为 begin 和 end 的函数，用于返回迭代器.由 begin 返回的迭代器指向第一个元素.由 end 操作返回的迭代器指向 vector 的“末端元素的下一个”。“超出
+末端迭代器”（off-the-end iterator）。表明它指向了一个不存在的元素。
+如果 vector 为空，begin 返回的迭代器与 end 返回的迭代器相同。由于 end 操作返回的迭代器不指向任何元素，因此不能对它进行解引用或自增操作.
+	vector<int> ivec;
+	iter = ivec.begin();
+	
+	迭代器类型可使用解引用操作符（dereference operator）（*）来访问迭代器所指向的元素.
+	*iter = 0;
+	用 == 或 != 操作符来比较两个迭代器，如果两个迭代器对象指向同一个元素，则它们相等，否则就不相等。
+	
+	
+	当我们对普通 iterator 类型解引用时，得到对某个元素的非 const。而如果我们对 const_iterator 类型解引用时，则可以得到一个指向 const 对象的引用.
+	vector<int>::const_iterator const_inte;
+	
+	const_iterator 对象:不能通过解引用来改变所指的值
+	const 的 iterator 对象:一旦被初始化后不能改变iterator对象，但是可以改变iterator对象所指向的内容。
+	const vector<int>::iterator iter=ivec.begin();
+	*iter = 0;//ok
+	iter++;//error
+	
+	任何改变 vector 长度的操作都会使已存在的迭代器失效。例如，在调用 push_back 之后，就不能再信赖指向 vector 的迭代器的值了
+	
+	
+	标准库 bitset
+	#include <bitset>
+	using std::bitset;
+	
+	bitset 对象的定义和初始化:
+	bitset<n> b; b 有 n 位，每位都 0
+	bitset<n> b(u); b 是 unsigned long 型 u 的一个副本
+	bitset<n> b(s); b 是 string 对象 s 中含有的位串的副本
+	bitset<n> b(s, pos, n); b 是 s 中从位置 pos 开始的&nbps;n 个位的副本。
+	
+	ex:
+	string str1("100100");
+	bitset<10> b2(str1);// error if:bitset<10> b2("100100");
+	bitset<10> b3(str1,2,3);// error if:bitset<10> b2("100100",2,3);
+	unsigned long u = 0x100100;
+	bitset<10> b4(u);
+	
+	用unsigned 值初始化 bitset 对象
+	当用 unsigned long 值作为 bitset 对象的初始值时，该值将转化为二进制的位模式。而 bitset 对象中的位集作为这种位模式的副本。如果 bitset 类型长度大于 unsigned long 值的二进制位数，则其余的高阶位将置为 0；如果 bitset 类型长度小于 unsigned long 值的二进制位数，则只使用 unsigned 值中的低阶位，超过 bistset 类型长度的高阶位将被丢弃
+	
+	用string 对象初始化 bitset 对象:
+	当用 string 对象初始化 bitset 对象时，string 对象直接表示为位模式。从 string 对象读入位集的顺序是从右向左（from right to left）：
+	string str1("100100");
+	bitset<10> b4(str1);
+	cout<<"b4:"<<b4[5]<<b4[4]<<b4[3]<<b4[2]<<b4[1]<<b4[0]<<endl;// 结果为:b4:100100
+	
+	bitset 对象上的操作:
+	b.any() b 中是否存在置为 1 的二进制位？
+	b.none() b 中不存在置为 1 的二进制位吗？
+	b.count() b 中置为 1 的二进制位的个数
+	b.size() b 中二进制位的个数
+	b[pos] 访问 b 中在 pos 处二进制位
+	b.test(pos) b 中在 pos 处的二进制位置为 1 么？
+	b.set() 把 b 中所有二进制位都置为 1
+	b.set(pos) 把 b 中在 pos 处的二进制位置为 1
+	b.reset() 把 b 中所有二进制位都置为 0
+	b.reset(pos) 把 b 中在 pos 处的二进制位置为 0
+	b.flip() 把 b 中所有二进制位逐位取反
+	b.flip(pos) 把 b 中在 pos 处的二进制位取反
+	b.to_ulong() 用 b 中同样的二进制位返回一个 unsigned long 值
+	os << b 把 b 中的位集输出到 os 流
+	
+	
